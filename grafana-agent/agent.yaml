@@ -1,0 +1,36 @@
+server:
+  log_level: debug
+
+logs:
+  configs:
+  - name: default
+    positions:
+      filename: /tmp/positions.yaml
+    scrape_configs:
+      - job_name: varlogs
+        static_configs:
+          - targets: [localhost]
+            labels:
+              job: varlogs
+              app: rust-grafana-metrics-logs-traces
+              __path__: /var/log/app/*log
+    clients:
+      - url: Get from Grafana cloud UI
+
+traces:
+  configs:
+  - name: default
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+
+    remote_write:
+      - endpoint: tempo-us-central1.grafana.net:443
+        insecure: false  # only add this if TLS is not required
+        basic_auth:
+          username: Get from Grafana cloud UI
+          password: Get from Grafana cloud UI
+    batch:
+      timeout: 5s
+      send_batch_size: 100
